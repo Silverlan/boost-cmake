@@ -19,6 +19,9 @@ endif()
 set(BOOST_URL "https://boostorg.jfrog.io/artifactory/main/release/1.80.0/source/boost_1_80_0.tar.bz2"
     CACHE STRING "Boost download URL"
 )
+set(BOOST_URL_MIRROR "https://sourceforge.net/projects/boost/files/boost/1.80.0/boost_1_80_0.tar.bz2"
+    CACHE STRING "Boost mirror download URL"
+)
 set(BOOST_URL_SHA256 "1e19565d82e43bc59209a168f5ac899d3ba471d55c7610c677d4ccf2c9c500c0"
     CACHE STRING "Boost download URL SHA256 checksum"
 )
@@ -30,6 +33,11 @@ FetchContent_GetProperties(Boost)
 if(NOT Boost_POPULATED)
   message(STATUS "Fetching Boost")
   FetchContent_Populate(Boost)
+  if(NOT Boost_POPULATED)
+    message(STATUS "Failed to fetch boost, trying mirror")
+    FetchContent_Declare(Boost URL ${BOOST_URL_MIRROR} URL_HASH SHA256=${BOOST_URL_SHA256})
+    FetchContent_Populate(Boost)
+
   message(STATUS "Fetching Boost - done")
   set(BOOST_SOURCE ${boost_SOURCE_DIR})
 
